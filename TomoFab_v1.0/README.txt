@@ -1,4 +1,4 @@
-µTOMOFAB is a free, open-source Matlab package providing a graphical interface to visualize and analyze a distribution of ellipsoids as e.g. acquired by X-ray computed micro-tomography and segmented using Blob3D (Ketcham, 2005) or equivalent.
+µTOMOFAB is a free, open-source Matlab package providing a graphical interface to visualize and analyze a distribution of ellipsoids (that can represent simplified grains, grain aggregates or pores) to derive fabric information as e.g. acquired by X-ray computed micro-tomography and treated using Blob3D (Ketcham, 2005) or equivalent.
 
 
 µTOMOFAB was developed in MATLAB language and is compatible with MATLAB R2015a and subsequent versions.
