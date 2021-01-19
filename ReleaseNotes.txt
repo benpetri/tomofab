@@ -1,0 +1,13 @@
+RELEASE NOTES :
+
+v1.0 : 01/04/2019
+- First stable TomoFab release!
+
+v1.1 : 30/12/2019
+- Kalsbeek contouring grid replaced by the modified Kamb method of Vollmer (1995)
+
+v1.2 : 24/01/2020 - Version of Petri et al. (2020)
+- Density plot scaled to 3 sigma or MUD
+- Input data format updated to new Blob3D release output format
+
+Citation : Petri, B., Almqvist, B.S.G., Pistone, M., 2020. 3D rock fabric analysis using micro-tomography: An introduction to the open-source TomoFab MATLAB code. Comput. Geosci. 138, 104444. https://doi.org/10.1016/j.cageo.2020.104444
