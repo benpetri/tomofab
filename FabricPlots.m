@@ -114,6 +114,42 @@ if get(chb17,'Value')==1 %  Standard Jelinek (1981) Pj-T (P'-T) diagram
 elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile and Jackson, 2004)
     hold on
 
+    datapointstot=[params.Pjall(:) params.Tall(:)];
+    maxP=ceil(max(datapointstot(:,1)));
+
+
+    datapoints=zeros(round(size(params.Pjall,1)/params.dstep),2);
+    j=1;
+    for i=1:params.dstep:size(params.Pjall,1) % Decrease the number of points to display if max 200 pts is selected
+        datapoints(j,:)=[params.Pjall(i) params.Tall(i)];
+        j=j+1;
+    end
+
+    for i=1:size(datapoints,1)
+        datapoints(i,1)=90-(datapoints(i,1)-1)/(maxP-1)*90;
+        datapoints(i,2)=90-datapoints(i,2)*45;
+    end
+
+  theta = pi*(datapoints(:,2))/180;
+    rho = pi*(datapoints(:,1))/180;
+    xpp=zeros(size(theta));
+    ypp=zeros(size(theta));
+    for i=1:size(theta,1)
+        trd=theta(i);
+        plg=rho(i);
+        if plg < 0.0
+            trd = ZeroTwoPi(trd+pi);
+            plg = -plg;
+        end
+        piS4 = pi/4.0;
+        s2 = sqrt(2.0);
+        plgS2 = plg/2.0;
+        xpt = s2*sin(piS4 - plgS2)*sin(trd);
+        ypt = s2*sin(piS4 - plgS2)*cos(trd);
+        xpp(i)=xpt;
+        ypp(i)=ypt;
+    end
+
     N = 50;
     cx = cos(-pi/4:pi/N:pi/4);
     cy = sin(-pi/4:pi/N:pi/4);
@@ -122,13 +158,19 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
     xh = [0 1];
     yh = [0 0];
     axis('equal');
-    fill(cx,cy,'w'); % Plot a white filled circle
+
+    if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it forP'T
+        KDE_grid_resol=200;
+        [~,densityPjT,Pjkde,Tkde]=KDE2D([xpp,ypp],KDE_grid_resol,[0 -0.7],[1 0.7]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
+        [~,c]=contourf(Pjkde,Tkde,densityPjT,0:round(max(max(densityPjT)),2)/(contourlevels+1):max(max(densityPjT)));
+        set(c,'LineColor','none');
+        fill(cx,cy,'w','FaceAlpha',0); % Plot a transparent filled circle
+    else % Otherwise plot a white background
+        fill(cx,cy,'w'); % Plot a white filled circle
+    end
     plot(xh,yh,'Color', [0.7 0.7 0.7]); % Plot axes
     axis off;
     hold on;
-
-    datapointstot=[params.Pjall(:) params.Tall(:)];
-    maxP=ceil(max(datapointstot(:,1)));
 
     if maxP<=2
         step=0.25;
@@ -179,12 +221,9 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
             xp(j)=xpt;
             yp(j)=ypt;
         end
-
         plot(xp,yp,'Color',[0.7 0.7 0.7])
         text(xp((size(a,1)-1)/2)-0.02,yp((size(a,1)-1)/2),num2str(i),'HorizontalAlignment','Right')
-
     end
-
 
     ht1=text(0.60, 0.65, 'Shape  - T = 1','HorizontalAlignment','Right');
     set(ht1,'Rotation',45)
@@ -196,47 +235,7 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
     set(ht4,'Rotation',-45)
     text(1.02, 0, 'Anisotropy - P''','HorizontalAlignment','Left');
 
-    datapoints=zeros(round(size(params.Pjall,1)/params.dstep),2);
-    j=1;
-    for i=1:params.dstep:size(params.Pjall,1) % Decrease the number of points to display if max 200 pts is selected
-        datapoints(j,:)=[params.Pjall(i) params.Tall(i)];
-        j=j+1;
-    end
-
-    for i=1:size(datapoints,1)
-        datapoints(i,1)=90-(datapoints(i,1)-1)/(maxP-1)*90;
-        datapoints(i,2)=90-datapoints(i,2)*45;
-    end
-
-
-    theta = pi*(datapoints(:,2))/180;
-    rho = pi*(datapoints(:,1))/180;
-    xp=zeros(size(theta));
-    yp=zeros(size(theta));
-    for i=1:size(theta,1)
-        trd=theta(i);
-        plg=rho(i);
-        if plg < 0.0
-            trd = ZeroTwoPi(trd+pi);
-            plg = -plg;
-        end
-        piS4 = pi/4.0;
-        s2 = sqrt(2.0);
-        plgS2 = plg/2.0;
-        xpt = s2*sin(piS4 - plgS2)*sin(trd);
-        ypt = s2*sin(piS4 - plgS2)*cos(trd);
-        xp(i)=xpt;
-        yp(i)=ypt;
-    end
-
-    if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it forP'T
-        KDE_grid_resol=200;
-        [~,densityPjT,Pjkde,Tkde]=KDE2D([xp,yp],KDE_grid_resol,[0 -0.7],[1 0.7]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
-        [~,c]=contourf(Pjkde,Tkde,densityPjT,0:round(max(max(densityPjT)),2)/(contourlevels+1):max(max(densityPjT)));
-        set(c,'LineColor','none');
-    end
-
-    plot(xp,yp,'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2)
+    plot(xpp,ypp,'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2)
 
     if params.daPj~=0 % Was an distribution anisotropy tensor already calculated in this session?
         for i=1:size(datapoints,1)
@@ -295,6 +294,43 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
 elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile and Jackson, 2004) with logarithmic P' axis
     hold on
 
+    datapointstot=[params.Pjall(:) params.Tall(:)];
+    maxP=ceil(max(datapointstot(:,1)));
+
+    datapoints=zeros(round(size(params.Pjall,1)/params.dstep),2);
+    j=1;
+    for i=1:params.dstep:size(params.Pjall,1) % Decrease the number of points to display if max 200 pts is selected
+        datapoints(j,:)=[params.Pjall(i) params.Tall(i)];
+        j=j+1;
+    end
+
+    datapoints(:,1)=log(datapoints(:,1))+1;
+
+    for i=1:size(datapoints,1)
+        datapoints(i,1)=90-(datapoints(i,1)-1)/(log(maxP))*90;
+        datapoints(i,2)=90-datapoints(i,2)*45;
+    end
+
+    theta = pi*(datapoints(:,2))/180;
+    rho = pi*(datapoints(:,1))/180;
+    xpp=zeros(size(theta));
+    ypp=zeros(size(theta));
+    for i=1:size(theta,1)
+        trd=theta(i);
+        plg=rho(i);
+        if plg < 0.0
+            trd = ZeroTwoPi(trd+pi);
+            plg = -plg;
+        end
+        piS4 = pi/4.0;
+        s2 = sqrt(2.0);
+        plgS2 = plg/2.0;
+        xpt = s2*sin(piS4 - plgS2)*sin(trd);
+        ypt = s2*sin(piS4 - plgS2)*cos(trd);
+        xpp(i)=xpt;
+        ypp(i)=ypt;
+    end
+
     N = 50;
     cx = cos(-pi/4:pi/N:pi/4);
     cy = sin(-pi/4:pi/N:pi/4);
@@ -303,13 +339,19 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
     xh = [0 1];
     yh = [0 0];
     axis('equal');
-    fill(cx,cy,'w'); % Plot a white filled circle
+
+    if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it forP'T
+        KDE_grid_resol=200;
+        [~,densityPjT,Pjkde,Tkde]=KDE2D([xpp,ypp],KDE_grid_resol,[0 -0.7],[1 0.7]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
+        [~,c]=contourf(Pjkde,Tkde,densityPjT,0:round(max(max(densityPjT)),2)/(contourlevels+1):max(max(densityPjT)));
+        set(c,'LineColor','none');
+        fill(cx,cy,'w','FaceAlpha',0); % Plot a transparent filled circle
+    else % Otherwise plot a white background
+        fill(cx,cy,'w'); % Plot a white filled circle
+    end
     plot(xh,yh,'Color', [0.7 0.7 0.7]); % Plot axes
     axis off;
     hold on;
-
-    datapointstot=[params.Pjall(:) params.Tall(:)];
-    maxP=ceil(max(datapointstot(:,1)));
 
     if maxP<=2
         step=0.25;
@@ -360,10 +402,8 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
             xp(j)=xpt;
             yp(j)=ypt;
         end
-
         plot(xp,yp,'Color',[0.7 0.7 0.7])
         text(xp((size(a,1)-1)/2)-0.02,yp((size(a,1)-1)/2),num2str(i),'HorizontalAlignment','Right')
-
     end
 
 
@@ -377,50 +417,7 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
     set(ht4,'Rotation',-45)
     text(1.02, 0, 'Anisotropy - P''','HorizontalAlignment','Left');
 
-
-    datapoints=zeros(round(size(params.Pjall,1)/params.dstep),2);
-    j=1;
-    for i=1:params.dstep:size(params.Pjall,1) % Decrease the number of points to display if max 200 pts is selected
-        datapoints(j,:)=[params.Pjall(i) params.Tall(i)];
-        j=j+1;
-    end
-
-    datapoints(:,1)=log(datapoints(:,1))+1;
-
-    for i=1:size(datapoints,1)
-        datapoints(i,1)=90-(datapoints(i,1)-1)/(log(maxP))*90;
-        datapoints(i,2)=90-datapoints(i,2)*45;
-    end
-
-
-    theta = pi*(datapoints(:,2))/180;
-    rho = pi*(datapoints(:,1))/180;
-    xp=zeros(size(theta));
-    yp=zeros(size(theta));
-    for i=1:size(theta,1)
-        trd=theta(i);
-        plg=rho(i);
-        if plg < 0.0
-            trd = ZeroTwoPi(trd+pi);
-            plg = -plg;
-        end
-        piS4 = pi/4.0;
-        s2 = sqrt(2.0);
-        plgS2 = plg/2.0;
-        xpt = s2*sin(piS4 - plgS2)*sin(trd);
-        ypt = s2*sin(piS4 - plgS2)*cos(trd);
-        xp(i)=xpt;
-        yp(i)=ypt;
-    end
-
-    if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it forP'T
-        KDE_grid_resol=200;
-        [~,densityPjT,Pjkde,Tkde]=KDE2D([xp,yp],KDE_grid_resol,[0 -0.7],[1 0.7]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
-        [~,c]=contourf(Pjkde,Tkde,densityPjT,0:round(max(max(densityPjT)),2)/(contourlevels+1):max(max(densityPjT)));
-        set(c,'LineColor','none');
-    end
-
-    plot(xp,yp,'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2)
+    plot(xpp,ypp,'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2)
 
     if params.daPj~=0 % Was a distribution anisotropy tensor already calculated in this session?
         for i=1:size(datapoints,1)
