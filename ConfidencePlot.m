@@ -11,7 +11,7 @@ function [Ell]=ConfidencePlot(Ell,AxisCoord,Color,chb1)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@ elseif get(chb1,'Value')==2
     [xel,yel]=WulffParams(EllDeg);
 end
 
-fsize=1; 
-for k=2:size(xel) % loop to quantify the number of rows requested to draw nice ellipses
+fsize=1;
+for k=2:size(xel,1) % loop to quantify the number of rows requested to draw nice ellipses
     if revrec(k-1) ~= revrec(k)
         fsize=fsize+1;
     end
@@ -52,7 +52,7 @@ cutxel{1}=xel(1);
 cutyel{1}=yel(1);
 nameinc=1;
 
-for k=2:size(xel) % Cut the ellipse coordinates into indepentent curves to avoid connecting lines if they are separated in different segments
+for k=2:size(xel,1) % Cut the ellipse coordinates into indepentent curves to avoid connecting lines if they are separated in different segments
     if revrec(k-1) == revrec(k)
         A = cutxel{nameinc};
         B = cutyel{nameinc};

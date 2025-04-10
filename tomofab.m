@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%           SEE ALSO README.txt         %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -51,28 +51,42 @@ axis off;
 %% Data importation and volume filtering interface
 %%
 
-pb1 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [720 640 120 25] ,'string' , 'Import dataset' , 'callback' , '[V1,V2,V3,Vtot,params,data,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6] = DataImport(sub1,sub2,sub3,sub4,sub5,sub6,Text1,Text2,Text3,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text36,Text37,chb1,chb2,chb3,chb4,chb5,chb6,chb7,chb8,chb9,chb10,chb11,chb12,chb13,chb14,chb15,chb16,chb17,chb18,chb19);' );
-pb2 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [840 640 120 25] ,'string' , 'Export dataset' , 'callback' , 'PrintDataset(Namein,V1,V2,V3,params)' );
-pb3 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [960 640 120 25] ,'string' , 'Export statistics' , 'callback' , 'PrintStats(Text8,Namein,V1,V2,V3,Vtot,params)' );
-pb4 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [1080 640 120 25] ,'string' , 'Export stereoplot' , 'callback' , 'PrintStereonet(chb7,chb9,sub1,Namein,params)' );
-pb5 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [1200 640 120 25] ,'string' , 'Export fabric plots' , 'callback' , 'PrintDiagrams(sub2,sub3,sub4,sub5,sub6,Namein)' );
+pb1 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [0 610 120 25] ,'string' , 'Import dataset' , 'callback' , '[V1,V2,V3,Vtot,params,data,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6] = DataImport(sub1,sub2,sub3,sub4,sub5,sub6,Text1,Text2,Text3,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text36,Text37,Text39,Text41,Text43,chb1,chb2,chb3,chb4,chb5,chb6,chb7,chb8,chb9,chb10,chb11,chb12,chb13,chb14,chb15,chb16,chb17,chb18,chb19);' );
+pb2 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [0 585 120 25] ,'string' , 'Export dataset' , 'callback' , 'PrintDataset(Namein,V1,V2,V3,params)' );
+pb3 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [0 560 120 25] ,'string' , 'Export statistics' , 'callback' , 'PrintStats(Text8,Namein,V1,V2,V3,Vtot,params)' );
+pb4 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [0 535 120 25] ,'string' , 'Export stereoplot' , 'callback' , 'PrintStereonet(chb7,chb9,sub1,Namein,params)' );
+pb5 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [0 510 120 25] ,'string' , 'Export fabric plots' , 'callback' , 'PrintDiagrams(chb7,chb9,sub2,sub3,sub4,sub5,sub6,Namein,params)' );
 
-Text1=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,610,410,20] , 'string' , 'Input file:' ,'horizontalAlignment','left');
-Text2=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,590,410,20] , 'string' , '... ellipsoids imported' ,'horizontalAlignment','left');
-Text3=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,570,410,20] , 'string' , '... ellipsoids after null volume filtering' ,'horizontalAlignment','left');
-Text4=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,550,410,20] , 'string' , '... ellipsoids after volume filtering' ,'horizontalAlignment','left');
-Text5=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,530,410,20] , 'string' , 'Ellipsoid volume range: ... - ... mm3' ,'horizontalAlignment','left');
-Text21=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,510,60,20] , 'string' , 'min Vol.' ,'horizontalAlignment','left');
-Text6 = uicontrol ( fig1 , 'style' , ' edit' , 'position', [1010,510,60,20] , 'string' , '0' );
-Text22=uicontrol ( fig1 , 'style' , ' text' , 'position', [1090,510,60,20] , 'string' , 'max Vol.' ,'horizontalAlignment','left');
-Text7 = uicontrol ( fig1 , 'style' , ' edit' , 'position', [1150,510,60,20] ,  'string' , '0' );
-pb6 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [950,480,200,25] ,'string' , 'Refresh volume filtering' , 'callback' , '[V1, V2, V3, Vtot, data, params, sub1,sub2,sub3,sub4,sub5,sub6]=VolumeFilter(data,params,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text36,Text37,chb1,chb2,chb3,chb4,chb5,chb6,chb7,chb8,chb9,chb10,chb11,chb12,chb13,chb14,chb15,chb16,chb17,chb18,chb19);' );
+Text1=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,640,410,20] , 'string' , 'Input file:' ,'horizontalAlignment','left');
+Text2=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,620,410,20] , 'string' , '... ellipsoids imported' ,'horizontalAlignment','left');
+Text3=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,600,410,20] , 'string' , '... ellipsoids after null volume filtering' ,'horizontalAlignment','left');
+Text4=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,580,410,20] , 'string' , '... ellipsoids after vol. & asp. ratio filtering' ,'horizontalAlignment','left');
+% Text38=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,560,410,20] , 'string' , '... ellipsoids after aspect ratio filtering' ,'horizontalAlignment','left');
+Text5=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,560,410,20] , 'string' , 'Ellipsoid volume range: ... - ... mm3' ,'horizontalAlignment','left');
+Text39=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,540,410,20] , 'string' , 'Ellipsoid aspect ratio range: ... - ... ' ,'horizontalAlignment','left');
+
+Text21=uicontrol ( fig1 , 'style' , ' text' , 'position', [950,520,60,20] , 'string' , 'min Vol.' ,'horizontalAlignment','left');
+Text6 = uicontrol ( fig1 , 'style' , ' edit' , 'position', [1010,520,60,20] , 'string' , '0' );
+Text22=uicontrol ( fig1 , 'style' , ' text' , 'position', [1090,520,60,20] , 'string' , 'max Vol.' ,'horizontalAlignment','left');
+Text7 = uicontrol ( fig1 , 'style' , ' edit' , 'position', [1150,520,60,20] ,  'string' , '0' );
+
+Text40 = uicontrol ( fig1 , 'style' , ' text' , 'position', [950,495,60,20] , 'string' , 'min Asp. ratio' ,'horizontalAlignment','left');
+Text41 = uicontrol ( fig1 , 'style' , ' edit' , 'position', [1010,495,60,20] , 'string' , '0' );
+Text42 = uicontrol ( fig1 , 'style' , ' text' , 'position', [1090,495,60,20] , 'string' , 'max Asp. ratio' ,'horizontalAlignment','left');
+Text43 = uicontrol ( fig1 , 'style' , ' edit' , 'position', [1150,495,60,20] ,  'string' , '0' );
+
+pb6 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [1220,518,100,25] ,'string' , 'Vol. filter' , 'callback' , '[V1, V2, V3, Vtot, data, params, sub1,sub2,sub3,sub4,sub5,sub6]=FilterVolume(data,params,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text36,Text37,chb1,chb2,chb3,chb4,chb5,chb6,chb7,chb8,chb9,chb10,chb11,chb12,chb13,chb14,chb15,chb16,chb17,chb18,chb19);' );
+pb8 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [1220,493,100,25] ,'string' , 'Asp. ratio filter' , 'callback' , '[V1, V2, V3, Vtot, data, params, sub1,sub2,sub3,sub4,sub5,sub6]=FilterAspec(data,params,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6,Text4,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text36,Text37,Text39,Text41,Text43,chb1,chb2,chb3,chb4,chb5,chb6,chb7,chb8,chb9,chb10,chb11,chb12,chb13,chb14,chb15,chb16,chb17,chb18,chb19);' );
+
+pb9 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [1220,468,100,25] ,'string' , 'Rf-Phi' , 'callback' , 'RfPhi(V1,V2,V3,Vtot,Text8,Text27,0)' );
+pb10 = uicontrol ( fig1 , 'style' , 'push' , 'position' , [1220,443,100,25] ,'string' , 'wei. Rf-Phi' , 'callback' , 'RfPhi(V1,V2,V3,Vtot,Text8,Text27,1)' );
+
 
 tbox1 = uipanel(fig1,'position',[0.5,0.005,0.495,0.04]);
 Text8=uicontrol ( tbox1 , 'style' , ' text' , 'position', [10,0,650,20] , 'string' , '...' ,'horizontalAlignment','left');
 
-Text35 = uicontrol ( fig1 , 'style' , ' text' , 'position', [30,640,70,15] , 'string' , 'STATUS : ' ,'horizontalAlignment','left');
-Text27 = uicontrol ( fig1 , 'style' , ' text' , 'position', [100,640,50,15] , 'string' , 'READY' ,'horizontalAlignment','left','BackgroundColor',[0.2 0.8 0]);
+Text35 = uicontrol ( fig1 , 'style' , ' text' , 'position', [10,640,70,15] , 'string' , 'STATUS : ' ,'horizontalAlignment','left');
+Text27 = uicontrol ( fig1 , 'style' , ' text' , 'position', [80,640,50,15] , 'string' , 'READY' ,'horizontalAlignment','left','BackgroundColor',[0.2 0.8 0]);
 
 
 %%
@@ -170,5 +184,5 @@ uicontrol ( fig1 , 'style' , ' text' , 'position', [540,70,50,20] , 'string' , (
 Text20= uicontrol ( fig1 , 'style' , ' text' , 'position', [595,70,45,20] , 'string' , '...' ,'horizontalAlignment','left');
 
 
-%% Resize function for better display options
-set(fig1,'ResizeFcn','SizeUpdate(fig1,pb1,pb2,pb3,pb4,pb5,Text1,Text2,Text3,Text4,Text5,Text21,Text6,Text22,Text7,Text27,Text35,pb6);');
+% Resize function for better display options
+set(fig1,'ResizeFcn','SizeUpdate(fig1,pb1,pb2,pb3,pb4,pb5,Text1,Text2,Text3,Text4,Text5,Text21,Text6,Text22,Text7,Text27,Text35,Text39,Text40,Text41,Text42,Text43,pb6,pb8,pb9,pb10);');

@@ -16,7 +16,7 @@ function [V1,V2,V3,Vtot,params]=ConfidenceHext(V1, V2, V3, Vtot, params, Text8, 
 %           - params: structure containing calculated parameters and
 %           methods of calculation
 % This function is inspired from pmag1.0 (Tauxe, 2002)
-% reference:
+% references:
 % - Hext, G.R., 1963. The Estimation of Second-Order Tensors, 
 % with Related Tests and Designs. Biometrika 50, 353-373.
 % doi:10.2307/2333905
@@ -24,7 +24,7 @@ function [V1,V2,V3,Vtot,params]=ConfidenceHext(V1, V2, V3, Vtot, params, Text8, 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by

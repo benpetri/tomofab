@@ -15,7 +15,7 @@ function [contours, grid, params] = DataDens(PointsCart,chb1,chb8,chb18,Text26,p
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ nlevels = str2double(get(Text26,'String')); % Get contours number
 sigma = 3.0;
 interpparam = 0.2;
 [grid, contours] = contour(PointsCart, ngrid, sigma, nlevels, chb1);
-if get(chb18,'Value')==2;
+if get(chb18,'Value')==2
     grid=grid/sigma;
 end
 params.denslim=[min(min(grid)) max(max(grid))];
@@ -85,7 +85,7 @@ for i = 1:ngrid
     yg = -1.0;
     for j = 1:ngrid
         y = sphereBProject(xg,yg,chb1);
-        for k = 1:ndata;
+        for k = 1:ndata
             d = dot(y,x(k,:));
             d = abs(d);
             grid(i,j) = grid(i,j) + exp(f*(d-1.0));

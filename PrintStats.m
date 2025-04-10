@@ -13,7 +13,7 @@ function PrintStats(Text8,Namein,V1,V2,V3,Vtot,params)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -53,6 +53,9 @@ end
 fprintf(fIDout,'%s %s\r\n','Blobs considered,', num2str(size(V1.cosine,1)));
 fprintf(fIDout,'%s %s\r\n','Min volume,',num2str(round(params.volran(1),5)));
 fprintf(fIDout,'%s %s\r\n','Max volume,',num2str(round(params.volran(2),5)));
+
+fprintf(fIDout,'%s %s\r\n','Min aspect ratio,',num2str(round(params.aspecran(1),5)));
+fprintf(fIDout,'%s %s\r\n','Max aspect ratio,',num2str(round(params.aspecran(2),5)));
 
 fprintf(fIDout,'%s %s %s %s %s %s\r\n','V1 PGR parameters,',num2str(round(V1.PGR(1),2)),',', num2str(round(V1.PGR(2),2)),',', num2str(round(V1.PGR(3),2)));
 fprintf(fIDout,'%s %s %s %s %s %s\r\n','V2 PGR parameters,',num2str(round(V2.PGR(1),2)),',', num2str(round(V2.PGR(2),2)),',', num2str(round(V2.PGR(3),2)));

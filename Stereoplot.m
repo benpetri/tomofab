@@ -16,7 +16,7 @@ function [sub1,sub2,sub3,sub6,V1,V2,V3,Vtot,params]=Stereoplot(V1,V2,V3,params,N
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ plot(xh,yh,xv,yv,'Color', [0.7 0.7 0.7]); % Plot axes
 axis off;
 hold on;
 
-if get(chb7,'Value')==1; %% Plot spherical projection plot. If interpolated density plot, avoid grid display
+if get(chb7,'Value')==1 %% Plot spherical projection plot. If interpolated density plot, avoid grid display
     if get(chb1,'Value')==1 %Equal area projection (Schmidt net) case
         for Dip = 10:10:80
             DipDir=90;
@@ -102,7 +102,7 @@ if get(chb7,'Value')==1; %% Plot spherical projection plot. If interpolated dens
         end
     end
     
-    if get(chb1,'Value')==2; % Equal angle projection (Wulff net) case
+    if get(chb1,'Value')==2 % Equal angle projection (Wulff net) case
         for Dip = 10:10:80
             DipDir=90;
             [x,y]=GCWulff(DipDir,Dip);
@@ -133,7 +133,7 @@ elseif get(chb9,'Value') == 4 % Case Parula
 elseif get(chb9,'Value') == 5 % Case Bilbao % This nice Colormap is
     %     produced by Crameri F., 2018. Scientific colour-maps. Zenodo.
     %     doi:http://doi.org/10.5281/zenodo.1243862
-    load('bilbao.mat');
+    load('bilbao.mat','bilbao');
     customCmap=bilbao;
 end
 
@@ -188,7 +188,7 @@ end
 if get(chb1,'Value')==1 % Equal area projection (Schmidt net) case
     text(-1,-0.9,'Equal area','Interpreter','none','FontSize',8)
     text(-1,-1,'Lower hemisphere','Interpreter','none','FontSize',8)
-elseif get(chb1,'Value')==2; % Equal angle projection (Wulff net) case
+elseif get(chb1,'Value')==2 % Equal angle projection (Wulff net) case
     text(-1,-0.9,'Equal angle','Interpreter','none','FontSize',8)
     text(-1,-1,'Lower hemisphere','Interpreter','none','FontSize',8)
 end
@@ -198,7 +198,7 @@ end
 %% Dataset display
 %%
 
-if get(chb2,'Value') == 1 && size(V1.cosine,1) < 200; % Adaptative display options, selects randomly maximum 200 points.
+if get(chb2,'Value') == 1 && size(V1.cosine,1) < 200 % Adaptative display options, selects randomly maximum 200 points.
     params.dstep = 1;
 elseif get(chb2,'Value') == 1 && size(V1.cosine,1) >=200
     params.dstep = ceil(size(V1.cosine,1)/200);
@@ -474,7 +474,7 @@ end
 %% Fabric plots
 %%
 
-[sub2,sub3,sub6]=FabricPlots(V1,V2,V3,Vtot,params,sub2,sub3,sub6,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text31,Text32,Text33,Text34,chb17,chb19); % Refresh fabric plots
+[sub2,sub3,sub6]=FabricPlots(V1,V2,V3,Vtot,params,sub2,sub3,sub6,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text31,Text32,Text33,Text34,chb7,chb17); % Refresh fabric plots
 
 set(Text27,'string','READY','BackgroundColor',[0.2 0.8 0]);
 

@@ -1,7 +1,7 @@
-function [sub2,sub3,sub6]=FabricPlots(V1,V2,V3,Vtot,params,sub2,sub3,sub6,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text31,Text32,Text33,Text34,chb17,chb19)
+function [sub2,sub3,sub6]=FabricPlots(V1,V2,V3,Vtot,params,sub2,sub3,sub6,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text31,Text32,Text33,Text34,chb7,chb17)
 %
 % function FabricPlots: Plot various fabric diagrams on the GUI
-% input:    - V1, V2, V3: structures containing the selected set of 
+% input:    - V1, V2, V3: structures containing the selected set of
 %           directional data.
 %           - params: structure containing calculated parameters and
 %           methods of calculation
@@ -11,40 +11,53 @@ function [sub2,sub3,sub6]=FabricPlots(V1,V2,V3,Vtot,params,sub2,sub3,sub6,Text14
 % - Borradaile, G.J., Jackson, M., 2004. Anisotropy of magnetic susceptibility
 % (AMS): magnetic petrofabrics of deformed rocks. Geol. Soc. London, Spec. Publ.
 % 238, 299-360.
-% - Flinn, D., 1962. On folding during three-dimensional progressive 
+% - Flinn, D., 1962. On folding during three-dimensional progressive
 % deformation. Q. J. Geol. Soc. 118, 385 LP-428.
-% - Jelinek, V., 1981. Characterization of the magnetic fabric of rocks. 
+% - Jelinek, V., 1981. Characterization of the magnetic fabric of rocks.
 % Tectonophysics 79, T63-T67. doi:https://doi.org/10.1016/0040-1951(81)90110-4
-% - Ramsay, J.G., 1967. Folding and fracturing of rock. McGraw-Hill, 
+% - Ramsay, J.G., 1967. Folding and fracturing of rock. McGraw-Hill,
 % New York.
 % - Vollmer, F.W., 1990. An application of eigenvalue methods to structural
 % domain analysis. Geol. Soc. Am. Bull. 102, 786-791.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
 %     the Free Software Foundation, either version 3 of the License, or
 %     any later version.
-% 
+%
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-%      
+%
 %     Please report any bug, error or suggestion to bpetri@unistra.fr
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 delete(sub2) % Section 1: Flinn diagram (1962) modified by Ramsay (1967)
 sub2=subplot(4,4,[11,15]);
 hold on
 
+% Adapt number of contours for density plots
+contourlevels = 9;
+
+% Pre-computes diagram limits to be used afterwards
+maxx=max([params.Kall(:,1); log(V1.oteigval(2)/V1.oteigval(1))]);
+maxy=max([params.Kall(:,2); log(V1.oteigval(3)/V1.oteigval(2))]);
+
+if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it for Flinn
+    KDE_grid_resol=200;
+    [~,densityFlinn,V2V3kde,V1V2kde]=KDE2D(params.Kall,KDE_grid_resol,[0,0],[maxx maxy]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
+    [~,c]=contourf(V2V3kde,V1V2kde,densityFlinn,0:round(max(max(densityFlinn)),2)/(contourlevels+1):max(max(densityFlinn)));
+    set(c,'LineColor','none');
+end
 
 for i=1:params.dstep:size(params.Kall,1) % Plot the coordinates of the points
     plot(params.Kall(i,1),params.Kall(i,2),'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2);
@@ -62,29 +75,32 @@ else
     V1.oteigval=zeros(1,3);
 end
 
-maxx=max([params.Kall(:,1); log(V1.oteigval(2)/V1.oteigval(1))]);
-maxy=max([params.Kall(:,2); log(V1.oteigval(3)/V1.oteigval(2))]);
-
-
 axis([0 inf 0 inf])
 xlabel('log(V2/V3) - planar')
 ylabel('log(V1/V2) - linear')
 line([0,min([maxx maxy])],[0,min([maxx maxy])],'Color','black') % Plot the reference line
 grid on
 
-
 delete(sub3) % Section 2: P'-T diagrams
 sub3=subplot(4,4,[12,16]);
 hold on
 if get(chb17,'Value')==1 %  Standard Jelinek (1981) Pj-T (P'-T) diagram
+
+    if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it forP'T
+        KDE_grid_resol=200;
+        [~,densityPjT,Pjkde,Tkde]=KDE2D([params.Pjall,params.Tall],KDE_grid_resol,[1,-1],[max(params.Pjall) 1]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
+        [~,c]=contourf(Pjkde,Tkde,densityPjT,0:round(max(max(densityPjT)),2)/(contourlevels+1):max(max(densityPjT)));
+        set(c,'LineColor','none');
+    end
+
     for i=1:params.dstep:size(params.Pjall,1)
         plot(params.Pjall(i),params.Tall(i),'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2);
     end
-    
+
     if params.daPj~=0 % Plot the value of the distribution anisotropy tensor
         plot(params.daPj,params.daT,'ok','MarkerFaceColor',[0.7 0.7 0.7])
     end
-    
+
     if params.Pjmean~=0
         plot(params.Pjmean,params.Tmean,'ok','MarkerFaceColor',[0 0 0]) % Plot the value of the mean orientation tensor
     end
@@ -97,7 +113,7 @@ if get(chb17,'Value')==1 %  Standard Jelinek (1981) Pj-T (P'-T) diagram
     grid on
 elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile and Jackson, 2004)
     hold on
-    
+
     N = 50;
     cx = cos(-pi/4:pi/N:pi/4);
     cy = sin(-pi/4:pi/N:pi/4);
@@ -110,10 +126,10 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
     plot(xh,yh,'Color', [0.7 0.7 0.7]); % Plot axes
     axis off;
     hold on;
-    
+
     datapointstot=[params.Pjall(:) params.Tall(:)];
     maxP=ceil(max(datapointstot(:,1)));
-    
+
     if maxP<=2
         step=0.25;
     elseif maxP<=3
@@ -133,22 +149,22 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
     else
         step=7;
     end
-    
+
     for i=1:step:maxP
         a=linspace(-1,1,51)';
         b=ones(size(a))*i;
         Points=[b a];
-        
+
         for j=1:size(Points,1)
             Points(j,1)=90-(Points(j,1)-1)/(maxP-1)*90;
             Points(j,2)=90-Points(j,2)*45;
         end
-        
+
         theta = pi*(Points(:,2))/180;
         rho = pi*(Points(:,1))/180;
         xp=zeros(size(theta));
         yp=zeros(size(theta));
-        for j=1:size(theta)
+        for j=1:size(theta,1)
             trd=theta(j);
             plg=rho(j);
             if plg < 0.0
@@ -163,13 +179,13 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
             xp(j)=xpt;
             yp(j)=ypt;
         end
-        
+
         plot(xp,yp,'Color',[0.7 0.7 0.7])
         text(xp((size(a,1)-1)/2)-0.02,yp((size(a,1)-1)/2),num2str(i),'HorizontalAlignment','Right')
-        
+
     end
-    
-    
+
+
     ht1=text(0.60, 0.65, 'Shape  - T = 1','HorizontalAlignment','Right');
     set(ht1,'Rotation',45)
     ht2=text(0.62, 0.58, 'Planar','HorizontalAlignment','Right');
@@ -179,25 +195,25 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
     ht4=text(0.62, -0.58, 'Linear','HorizontalAlignment','Right');
     set(ht4,'Rotation',-45)
     text(1.02, 0, 'Anisotropy - P''','HorizontalAlignment','Left');
-    
+
     datapoints=zeros(round(size(params.Pjall,1)/params.dstep),2);
     j=1;
     for i=1:params.dstep:size(params.Pjall,1) % Decrease the number of points to display if max 200 pts is selected
         datapoints(j,:)=[params.Pjall(i) params.Tall(i)];
         j=j+1;
     end
-    
+
     for i=1:size(datapoints,1)
         datapoints(i,1)=90-(datapoints(i,1)-1)/(maxP-1)*90;
         datapoints(i,2)=90-datapoints(i,2)*45;
     end
-    
-    
+
+
     theta = pi*(datapoints(:,2))/180;
     rho = pi*(datapoints(:,1))/180;
     xp=zeros(size(theta));
     yp=zeros(size(theta));
-    for i=1:size(theta)
+    for i=1:size(theta,1)
         trd=theta(i);
         plg=rho(i);
         if plg < 0.0
@@ -212,8 +228,16 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
         xp(i)=xpt;
         yp(i)=ypt;
     end
+
+    if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it forP'T
+        KDE_grid_resol=200;
+        [~,densityPjT,Pjkde,Tkde]=KDE2D([xp,yp],KDE_grid_resol,[0 -0.7],[1 0.7]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
+        [~,c]=contourf(Pjkde,Tkde,densityPjT,0:round(max(max(densityPjT)),2)/(contourlevels+1):max(max(densityPjT)));
+        set(c,'LineColor','none');
+    end
+
     plot(xp,yp,'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2)
-    
+
     if params.daPj~=0 % Was an distribution anisotropy tensor already calculated in this session?
         for i=1:size(datapoints,1)
             mean(1)=90-(params.daPj-1)/(maxP-1)*90;
@@ -240,8 +264,8 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
         end
         plot(xp,yp,'ok','MarkerFaceColor',[0.7 0.7 0.7]) % Plot the value of the mean orientation tensor
     end
-    
-    
+
+
     if params.Pjmean~=0 % Was an orientation tensor already calculated in this session?
         for i=1:size(datapoints,1)
             mean(1)=90-(params.Pjmean-1)/(maxP-1)*90;
@@ -251,7 +275,7 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
         rho = pi*(mean(1))/180;
         xp=zeros(size(theta));
         yp=zeros(size(theta));
-        for i=1:size(theta)
+        for i=1:size(theta,1)
             trd=theta(i);
             plg=rho(i);
             if plg < 0.0
@@ -270,7 +294,7 @@ elseif get(chb17,'Value')==2 % Polar variation of the Jelinek plot (Borradaile a
     end
 elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile and Jackson, 2004) with logarithmic P' axis
     hold on
-    
+
     N = 50;
     cx = cos(-pi/4:pi/N:pi/4);
     cy = sin(-pi/4:pi/N:pi/4);
@@ -283,10 +307,10 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
     plot(xh,yh,'Color', [0.7 0.7 0.7]); % Plot axes
     axis off;
     hold on;
-    
+
     datapointstot=[params.Pjall(:) params.Tall(:)];
     maxP=ceil(max(datapointstot(:,1)));
-    
+
     if maxP<=2
         step=0.25;
     elseif maxP<=3
@@ -306,22 +330,22 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
     else
         step=7;
     end
-    
+
     for i=1:step:maxP % Calculates and plot a grid and axis information
         a=linspace(-1,1,51)';
         b=ones(size(a))*i;
         Points=[b a];
-        
+
         for j=1:size(Points,1)
             Points(j,1)=90-(log(Points(j,1)))/(log(maxP))*90;
             Points(j,2)=90-Points(j,2)*45;
         end
-        
+
         theta = pi*(Points(:,2))/180;
         rho = pi*(Points(:,1))/180;
         xp=zeros(size(theta));
         yp=zeros(size(theta));
-        for j=1:size(theta)
+        for j=1:size(theta,1)
             trd=theta(j);
             plg=rho(j);
             if plg < 0.0
@@ -336,13 +360,13 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
             xp(j)=xpt;
             yp(j)=ypt;
         end
-        
+
         plot(xp,yp,'Color',[0.7 0.7 0.7])
         text(xp((size(a,1)-1)/2)-0.02,yp((size(a,1)-1)/2),num2str(i),'HorizontalAlignment','Right')
-        
+
     end
-    
-    
+
+
     ht1=text(0.60, 0.65, 'Shape  - T = 1','HorizontalAlignment','Right');
     set(ht1,'Rotation',45)
     ht2=text(0.62, 0.58, 'Planar','HorizontalAlignment','Right');
@@ -352,28 +376,28 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
     ht4=text(0.62, -0.58, 'Linear','HorizontalAlignment','Right');
     set(ht4,'Rotation',-45)
     text(1.02, 0, 'Anisotropy - P''','HorizontalAlignment','Left');
-    
-    
+
+
     datapoints=zeros(round(size(params.Pjall,1)/params.dstep),2);
     j=1;
     for i=1:params.dstep:size(params.Pjall,1) % Decrease the number of points to display if max 200 pts is selected
         datapoints(j,:)=[params.Pjall(i) params.Tall(i)];
         j=j+1;
     end
-    
+
     datapoints(:,1)=log(datapoints(:,1))+1;
-    
+
     for i=1:size(datapoints,1)
         datapoints(i,1)=90-(datapoints(i,1)-1)/(log(maxP))*90;
         datapoints(i,2)=90-datapoints(i,2)*45;
     end
-    
-    
+
+
     theta = pi*(datapoints(:,2))/180;
     rho = pi*(datapoints(:,1))/180;
     xp=zeros(size(theta));
     yp=zeros(size(theta));
-    for i=1:size(theta)
+    for i=1:size(theta,1)
         trd=theta(i);
         plg=rho(i);
         if plg < 0.0
@@ -388,8 +412,16 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
         xp(i)=xpt;
         yp(i)=ypt;
     end
+
+    if get(chb7,'Value')~=1 % If density plots were requested, we also calculate it forP'T
+        KDE_grid_resol=200;
+        [~,densityPjT,Pjkde,Tkde]=KDE2D([xp,yp],KDE_grid_resol,[0 -0.7],[1 0.7]); % Let's call some help from Botev's routine (Zdravko Botev, 2025, Kernel density estimation, MATLAB Central File Exchange)
+        [~,c]=contourf(Pjkde,Tkde,densityPjT,0:round(max(max(densityPjT)),2)/(contourlevels+1):max(max(densityPjT)));
+        set(c,'LineColor','none');
+    end
+
     plot(xp,yp,'o','MarkerEdgeColor',[0.4 0.4 0.4],'MarkerFaceColor',[0.4 0.4 0.4],'MarkerSize',2)
-    
+
     if params.daPj~=0 % Was a distribution anisotropy tensor already calculated in this session?
         for i=1:size(datapoints,1)
             mean(1)=90-(log(params.daPj))/(log(maxP))*90;
@@ -416,7 +448,7 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
         end
         plot(xp,yp,'ok','MarkerFaceColor',[0.7 0.7 0.7]) % Plot the value of the mean orientation tensor
     end
-    
+
     if params.Pjmean~=0 % Was an orientation tensor already calculated in this session?
         for i=1:size(datapoints,1)
             mean(1)=90-(log(params.Pjmean))/(log(maxP))*90;
@@ -426,7 +458,7 @@ elseif get(chb17,'Value')==3  % Polar variation of the Jelinek plot (Borradaile 
         rho = pi*(mean(1))/180;
         xp=zeros(size(theta));
         yp=zeros(size(theta));
-        for i=1:size(theta)
+        for i=1:size(theta,1)
             trd=theta(i);
             plg=rho(i);
             if plg < 0.0
@@ -499,8 +531,6 @@ if params.daPj~=0 % If distribution anisotropy tensor was calculated
     set(Text32,'String',['DA.P'' = ' num2str(round(params.daPj,2))]) % Refresh GUI
     set(Text34,'String',['DA.eigval = ' num2str(round(Vtot.daeigval(1),4)) ' / ' num2str(round(Vtot.daeigval(2),4)) ' / ' num2str(round(Vtot.daeigval(3),4))]) % Refresh GUI
 end
-
-
 
 end
 

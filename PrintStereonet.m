@@ -6,7 +6,7 @@ function PrintStereonet(chb7,chb9,sub1,Namein,params)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ if get(chb7,'Value')~=1 % If density is requested
     elseif get(chb9,'Value') == 5 % Case Bilbao % This nice Colormap is
         %     produced by Crameri F., 2018. Scientific colour-maps. Zenodo.
         %     doi:http://doi.org/10.5281/zenodo.1243862
-        load('bilbao.mat');
+        load('bilbao.mat','bilbao');
         customCmap=bilbao;
     end
     if get(chb9,'Value') == 1 % Case color corresponds to selected axe color
@@ -60,7 +60,7 @@ if get(chb7,'Value')~=1 % If density is requested
     end
         h=colorbar;
         ylabel(h,params.densmeth)
-        caxis(params.denslim)
+        clim(params.denslim)
     colormap(customCmap)
 %     colorbar
 end
@@ -76,7 +76,7 @@ switch answer
         close(fig2)
     case 'EPS'
         tmpname=strsplit(Namein,'.');
-        print(fig2,cell2mat(strcat(tmpname(1),'_',fsuf,'_snet')),'-depsc2')
+        print(fig2,cell2mat(strcat(tmpname(1),'_',fsuf,'_snet')),'-depsc2','-vector')
         close(fig2)
     case 'Cancel'
         close(fig2)

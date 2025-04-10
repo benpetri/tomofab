@@ -6,7 +6,7 @@ function [xp,yp] = SchmidtParams(Points)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ theta = pi*(Points(:,1))/180;
 rho = pi*(Points(:,2))/180;
 xp=zeros(size(theta));
 yp=zeros(size(theta));
-for i=1:size(theta)
+for i=1:size(theta,1)
     trd=theta(i);
     plg=rho(i);
     if plg < 0.0

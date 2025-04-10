@@ -11,7 +11,7 @@ function [Data,Revrec]=Rotator(CoreOr, Data, IsCos)
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ for i=1:size(Data,1)
     %% Rotation 2: correction for bottom up acquisition: for reversed samples, around X, amount = 180�
     %%
     
-    if RevPosition == 1;
+    if RevPosition == 1
         u2 = [1 0 0]; % Unitary vector of the rotation axis
         thetaR2 = -180; % Rotation angle
         thetaR2 = -pi*(thetaR2)/180; % transformation into rad

@@ -1,4 +1,4 @@
-function [V1,V2,V3,Vtot,params,data,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6] = DataImport(sub1,sub2,sub3,sub4,sub5,sub6,Text1,Text2,Text3,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text36,Text37,chb1,chb2,chb3,chb4,chb5,chb6,chb7,chb8,chb9,chb10,chb11,chb12,chb13,chb14,chb15,chb16,chb17,chb18,chb19)
+function [V1,V2,V3,Vtot,params,data,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6] = DataImport(sub1,sub2,sub3,sub4,sub5,sub6,Text1,Text2,Text3,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text36,Text37,Text39,Text41,Text43,chb1,chb2,chb3,chb4,chb5,chb6,chb7,chb8,chb9,chb10,chb11,chb12,chb13,chb14,chb15,chb16,chb17,chb18,chb19)
 %
 % function DataImport: Import dataset from a csv file haveing .xls
 % extension
@@ -15,7 +15,7 @@ function [V1,V2,V3,Vtot,params,data,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6]
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%     This file is part of TOMOFAB. Copyright (C) 2018-2021  Benoit Petri
+%     This file is part of TOMOFAB. Copyright (C) 2018-2025  Benoit Petri
 %
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ function [V1,V2,V3,Vtot,params,data,Namein,Pathin,sub1,sub2,sub3,sub4,sub5,sub6]
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-clearvars -except sub1 sub2 sub3 sub4 sub5 sub6 Text1 Text2 Text3 Text4 Text5 Text6 Text7 Text8 Text9 Text10 Text11 Text12 Text13 Text14 Text15 Text16 Text17 Text18 Text19 Text20 Text21 Text22 Text23 Text24 Text25 Text26 Text27 Text28 Text29 Text30 Text31 Text32 Text33 Text34 Text36 Text37 chb1 chb2 chb3 chb4 chb5 chb6 chb7 chb8 chb9 chb10 chb11 chb12 chb13 chb14 chb15 chb16 chb17 chb18 chb19
+clearvars -except sub1 sub2 sub3 sub4 sub5 sub6 Text1 Text2 Text3 Text4 Text5 Text6 Text7 Text8 Text9 Text10 Text11 Text12 Text13 Text14 Text15 Text16 Text17 Text18 Text19 Text20 Text21 Text22 Text23 Text24 Text25 Text26 Text27 Text28 Text29 Text30 Text31 Text32 Text33 Text34 Text36 Text37 Text38 Text39 Text41 Text43 chb1 chb2 chb3 chb4 chb5 chb6 chb7 chb8 chb9 chb10 chb11 chb12 chb13 chb14 chb15 chb16 chb17 chb18 chb19
 
 
 %% Manual file selection
@@ -84,14 +84,21 @@ params.volran=[min([data.raw{:,4}]) max([data.raw{:,4}])]; % Update the volume r
 set(Text1,'string',['Input: ' Namein]) % Refresh GUI
 set(Text2,'string',[num2str(size(raw{1},1)) ' ellipsoids imported']) % Refresh GUI
 set(Text3,'string',[num2str(size(data.raw,1)) ' ellipsoids after null volume filtering']) % Refresh GUI
-set(Text4,'string',[num2str(size(data.raw,1)) ' ellipsoids after volume filtering']) % Refresh GUI
+set(Text4,'string',[num2str(size(data.raw,1)) ' ellipsoids after vol. & asp. ratio filtering']) % Refresh GUI
 set(Text5,'string',['Ellipsoid volume range:  ' num2str(round(params.volran(1),4)) ' - ' num2str(round(params.volran(2),4)) ' mm3']) % Refresh GUI
 set(Text6,'string',num2str(round(params.volran(1),4))) % Refresh GUI
 set(Text7,'string',num2str(round(params.volran(2),4))) % Refresh GUI
 
+
 data.filtered=data.raw; % Copy raw data to filtered data as no volume filter should be applied during importation.
 
 [V1,V2,V3,params] = DataFormat(data.filtered,params); % Creates the dataset that will be processed and updates the associated parameters
+
+params.aspecran=[min([params.aspecall]) max([params.aspecall])]; % Update the aspect ratio range with the minimal and maximal blob volume in entry data set
+set(Text39,'string',['Ellipsoid aspect ratio range: ' num2str(round(params.aspecran(1),4)) ' - ' num2str(round(params.aspecran(2),4))]) % Refresh GUI
+set(Text41,'string',num2str(round(params.aspecran(1),4))) % Refresh GUI
+set(Text43,'string',num2str(round(params.aspecran(2),4))) % Refresh GUI
+
 
 delete(sub4)
 sub4=subplot(4,4,3); % Plot blob volume histogram
